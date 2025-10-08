@@ -2,9 +2,5 @@
   "buildCommand": "pnpm build",
   "outputDirectory": ".next",
   "installCommand": "pnpm install",
-  "framework": "nextjs",
-  "env": {
-    "RAKUTEN_APP_ID": "@rakuten-app-id",
-    "GEMINI_API_KEY": "@gemini-api-key"
-  }
+  "framework": "nextjs"
 }
