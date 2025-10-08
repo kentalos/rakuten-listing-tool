@@ -479,19 +479,19 @@ export default function LPScorerPage() {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           <div className="bg-blue-50 p-4 rounded-lg text-center">
                             <div className="text-2xl font-bold text-blue-600">
-                              {detailedData.reviews.find(r => r.average_rating)?.average_rating || 'N/A'}
+                              {detailedData.reviews.find((r: any) => r.average_rating)?.average_rating || 'N/A'}
                             </div>
                             <div className="text-sm text-gray-600">平均評価</div>
                           </div>
                           <div className="bg-green-50 p-4 rounded-lg text-center">
                             <div className="text-2xl font-bold text-green-600">
-                              {detailedData.reviews.find(r => r.review_count)?.review_count || 'N/A'}
+                              {detailedData.reviews.find((r: any) => r.review_count)?.review_count || 'N/A'}
                             </div>
                             <div className="text-sm text-gray-600">レビュー数</div>
                           </div>
                           <div className="bg-purple-50 p-4 rounded-lg text-center">
                             <div className="text-2xl font-bold text-purple-600">
-                              {detailedData.reviews.filter(r => r.reviews && r.reviews.length > 0).reduce((acc, r) => acc + r.reviews.length, 0)}
+                              {detailedData.reviews.filter((r: any) => r.reviews && r.reviews.length > 0).reduce((acc: number, r: any) => acc + r.reviews.length, 0)}
                             </div>
                             <div className="text-sm text-gray-600">取得レビュー</div>
                           </div>
