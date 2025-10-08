@@ -22,12 +22,12 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '20'
 
     - name: Setup pnpm
-      uses: pnpm/action-setup@v2
+      uses: pnpm/action-setup@v4
       with:
-        version: 8
+        version: 9
 
     - name: Get pnpm store directory
       shell: bash
@@ -35,7 +35,7 @@ jobs:
         echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
     - name: Setup pnpm cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ${{ env.STORE_PATH }}
         key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -51,18 +51,21 @@ jobs:
         touch dist/.nojekyll
       env:
         NODE_ENV: production
+        NEXT_PUBLIC_RAKUTEN_APP_ID: ${{ secrets.NEXT_PUBLIC_RAKUTEN_APP_ID }}
+        NEXT_PUBLIC_GEMINI_API_KEY: ${{ secrets.NEXT_PUBLIC_GEMINI_API_KEY }}
+        NEXT_PUBLIC_STATIC_EXPORT: true
 
     - name: Setup Pages
-      uses: actions/configure-pages@v3
+      uses: actions/configure-pages@v4
       if: github.ref == 'refs/heads/main'
 
     - name: Upload artifact
-      uses: actions/upload-pages-artifact@v2
+      uses: actions/upload-pages-artifact@v3
       if: github.ref == 'refs/heads/main'
       with:
         path: ./dist
 
     - name: Deploy to GitHub Pages
       id: deployment
-      uses: actions/deploy-pages@v2
+      uses: actions/deploy-pages@v4
       if: github.ref == 'refs/heads/main'
