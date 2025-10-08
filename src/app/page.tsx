@@ -11,17 +11,21 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ApiItem } from '@/lib/rakuten'
 import { LPScore } from '@/lib/lp-scorer'
+import { searchRakutenProducts, scoreLandingPage, scrapeProductDetails } from '@/lib/client-api'
 import Link from 'next/link'
 
 export default function Home() {
-  const [searchQuery, setSearchQuery] = useState('猫 爪とぎ')
+  const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<ApiItem[]>([])
+  const [totalResults, setTotalResults] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [totalResults, setTotalResults] = useState(0)
   const [lpScores, setLpScores] = useState<Record<string, LPScore>>({})
   const [scoringItems, setScoringItems] = useState<Set<string>>(new Set())
   const [scrapingItems, setScrapingItems] = useState<Set<string>>(new Set())
+  
+  // 静的エクスポート環境かどうかをチェック
+  const isStaticExport = process.env.NEXT_PUBLIC_STATIC_EXPORT === 'true'
 
   // 検索処理
   const handleSearch = async () => {
@@ -31,14 +35,7 @@ export default function Home() {
     setError(null)
     
     try {
-      const response = await fetch(`/api/rakuten?q=${encodeURIComponent(searchQuery)}`)
-      
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || `HTTP ${response.status}`)
-      }
-
-      const data = await response.json()
+      const data = await searchRakutenProducts(searchQuery)
       setSearchResults(data.items)
       setTotalResults(data.total)
     } catch (err) {
@@ -106,19 +103,7 @@ export default function Home() {
         cta_texts: ['商品を見る', '購入する', 'カートに入れる'],
       }
 
-      const response = await fetch('/api/lp-scorer', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(lpData),
-      })
-
-      if (!response.ok) {
-        throw new Error('LP採点に失敗しました')
-      }
-
-      const score = await response.json()
+      const score: LPScore = await scoreLandingPage(lpData)
       setLpScores(prev => ({
         ...prev,
         [itemKey]: score
@@ -157,20 +142,7 @@ export default function Home() {
     setScrapingItems(prev => new Set(prev).add(itemKey))
 
     try {
-      const response = await fetch('/api/scrape-product', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ productUrl: item.url }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'スクレイピングに失敗しました')
-      }
-
-      const result = await response.json()
+      const result = await scrapeProductDetails(item.url)
       
       if (result.success && result.data) {
         // スクレイピングした詳細データでLP採点器に遷移
@@ -416,10 +388,11 @@ export default function Home() {
                           variant="default" 
                           size="sm" 
                           onClick={() => handleDetailedScraping(item)}
-                          disabled={scrapingItems.has(item.url)}
+                          disabled={scrapingItems.has(item.url) || isStaticExport}
                           className="flex-1"
+                          title={isStaticExport ? '静的エクスポート環境ではスクレイピング機能は使用できません' : ''}
                         >
-                          {scrapingItems.has(item.url) ? '🔍 分析中...' : '🔍 LP採点器'}
+                          {scrapingItems.has(item.url) ? '🔍 分析中...' : isStaticExport ? '🔍 LP採点器 (無効)' : '🔍 LP採点器'}
                         </Button>
                       </div>
                     </div>

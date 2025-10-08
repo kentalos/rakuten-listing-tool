@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "SKIP_ENV_VALIDATION=1 next build --turbopack",
+    "export": "SKIP_ENV_VALIDATION=1 next build && next export",
+    "deploy": "npm run export && touch dist/.nojekyll",
     "start": "next start",
     "type-check": "tsc --noEmit"
   },
