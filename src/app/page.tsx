@@ -70,7 +70,7 @@ export default function Home() {
         `価格: ¥${item.price.toLocaleString()}`,
         item.reviewAverage ? `レビュー平均: ${item.reviewAverage}点` : '',
         item.reviewCount ? `レビュー数: ${item.reviewCount}件` : ''
-      ].filter(text => text.trim()).join('\n\n'),
+      ].filter((text: string) => text.trim()).join('\n\n'),
       images: item.images && item.images.length > 0 ? item.images : (item.image ? [item.image] : []),
       price_texts: [`¥${item.price.toLocaleString()}`],
       cta_texts: ['商品を見る', '購入する', 'カートに入れる'],
@@ -100,7 +100,7 @@ export default function Home() {
           `価格: ¥${item.price.toLocaleString()}`,
           item.reviewAverage ? `レビュー平均: ${item.reviewAverage}点` : '',
           item.reviewCount ? `レビュー数: ${item.reviewCount}件` : ''
-        ].filter(text => text.trim()).join('\n\n'),
+        ].filter((text: string) => text.trim()).join('\n\n'),
         images: item.images && item.images.length > 0 ? item.images : (item.image ? [item.image] : []),
         price_texts: [`¥${item.price.toLocaleString()}`],
         cta_texts: ['商品を見る', '購入する', 'カートに入れる'],

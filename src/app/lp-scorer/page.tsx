@@ -69,7 +69,7 @@ export default function LPScorerPage() {
   // 配列フィールドの文字列変換
   const arrayToString = (arr: string[]): string => arr.join('\n')
   const stringToArray = (str: string): string[] => 
-    str.split('\n').map(s => s.trim()).filter(s => s.length > 0)
+    str.split('\n').map((s: string) => s.trim()).filter((s: string) => s.length > 0)
 
   // LP採点処理
   const handleScore = async () => {
@@ -498,7 +498,7 @@ export default function LPScorerPage() {
                         </div>
 
                         {/* レビュー分析サマリー */}
-                        {detailedData.reviews.some(r => r.review_summary) && (
+                        {detailedData.reviews.some((r: any) => r.review_summary) && (
                           <div className="space-y-4">
                             <h4 className="font-medium text-gray-900">レビュー分析サマリー</h4>
                             {detailedData.reviews.map((reviewData, index) => (
